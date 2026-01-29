@@ -5,22 +5,26 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Scanner;
 import java.util.UUID;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+@Component
 public class CorrelationIdFilter extends OncePerRequestFilter{
 	public static final String HEADER = "X-Correlation-Id";
 	
 	public static final String MDC_KEY = "correlationId";
-
+	
 	@Override
     protected void doFilterInternal(
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain
     ) throws ServletException, IOException {
+		
+		System.out.println("CorrelationIdFilter triggered");
 
         // 1) Request’ten correlationId al
         String correlationId = request.getHeader(HEADER);
