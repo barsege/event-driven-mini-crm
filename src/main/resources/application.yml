@@ -14,3 +14,8 @@ spring:
 
   kafka:
     bootstrap-servers: localhost:9092
+    
+  logging:
+    pattern:
+      console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%X{correlationId}] %logger{36} - %msg%n"
+
