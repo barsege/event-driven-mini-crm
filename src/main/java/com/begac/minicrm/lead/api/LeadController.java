@@ -1,6 +1,7 @@
 package com.begac.minicrm.lead.api;
 
 import com.begac.minicrm.lead.application.LeadService;
+import java.util.UUID;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,5 +19,10 @@ public class LeadController {
     @ResponseStatus(HttpStatus.CREATED)
     public LeadResponse create(@RequestBody CreateLeadRequest req) {
         return leadService.create(req);
+    }
+    
+    @PatchMapping("/{id}/status")
+    public LeadResponse changeStatus(@PathVariable("id") UUID id, @RequestBody ChangeLeadStatusRequest req) {
+        return leadService.changeStatus(id, req);
     }
 }
