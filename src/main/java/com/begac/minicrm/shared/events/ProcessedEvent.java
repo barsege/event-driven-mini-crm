@@ -20,10 +20,10 @@ public class ProcessedEvent {
 	protected ProcessedEvent() {
 	}
 
-	public ProcessedEvent(UUID eventId, String eventType, Instant processedAt) {
+	public ProcessedEvent(UUID eventId, String eventType) {
 		this.eventId = eventId;
 		this.eventType = eventType;
-		this.processedAt = processedAt;
+		this.processedAt = Instant.now();
 	}
 
 	public UUID getEventId() {
