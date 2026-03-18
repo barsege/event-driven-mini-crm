@@ -6,6 +6,9 @@ import com.begac.minicrm.opportunity.application.OpportunityService;
 import com.begac.minicrm.shared.events.EventEnvelope;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +17,8 @@ public class LeadQualifiedConsumer {
 
     private final OpportunityService opportunityService;
     private final ObjectMapper objectMapper;
+
+    private static final Logger log = LoggerFactory.getLogger(LeadQualifiedConsumer.class);
 
     public LeadQualifiedConsumer(
             OpportunityService opportunityService,
@@ -35,10 +40,35 @@ public class LeadQualifiedConsumer {
                         new TypeReference<EventEnvelope<LeadQualifiedPayload>>() {}
                 );
 
-        if (!LeadEventTypes.LEAD_QUALIFIED.equals(event.eventType())) {
-            return;
-        }
+        MDC.put("correlationId", event.correlationId());
 
-        opportunityService.handleLeadQualified(event);
+        try {
+            log.info(
+                    "Received message from Kafka. topic=crm.lead-events, eventType={}, eventId={}, correlationId={}",
+                    event.eventType(),
+                    event.eventId(),
+                    event.correlationId()
+            );
+
+            if (!LeadEventTypes.LEAD_QUALIFIED.equals(event.eventType())) {
+                log.info(
+                        "Ignoring unsupported event type. eventType={}, eventId={}",
+                        event.eventType(),
+                        event.eventId()
+                );
+                return;
+            }
+
+            opportunityService.handleLeadQualified(event);
+
+            log.info(
+                    "Successfully consumed event. eventType={}, eventId={}, correlationId={}",
+                    event.eventType(),
+                    event.eventId(),
+                    event.correlationId()
+            );
+        } finally {
+            MDC.remove("correlationId");
+        }
     }
 }
