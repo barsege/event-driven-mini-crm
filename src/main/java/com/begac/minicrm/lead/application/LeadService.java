@@ -39,21 +39,20 @@ public class LeadService {
     @Transactional
     public LeadResponse changeStatus(UUID id, ChangeLeadStatusRequest req) {
         var lead = leadRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Lead not found: " + id));
+                .orElseThrow(() -> new LeadNotFoundException(id));
 
         LeadStatus before = lead.getStatus();
 
         try {
             lead.changeStatus(req.to());
         } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+            throw new InvalidLeadStatusTransitionException(e.getMessage());
         } catch (IllegalStateException e) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage(), e);
+            throw new InvalidLeadStatusTransitionException(e.getMessage());
         }
 
         var saved = leadRepository.save(lead);
 
-        // ✅ QUALIFIED olunca event publish
         if (before != LeadStatus.QUALIFIED && saved.getStatus() == LeadStatus.QUALIFIED) {
             var payload = new LeadQualifiedPayload(saved.getId());
             var envelope = EventEnvelope.of(
