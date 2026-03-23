@@ -30,7 +30,8 @@ public class LeadQualifiedConsumer {
 
     @KafkaListener(
             topics = "crm.lead-events",
-            groupId = "opportunity-service"
+            groupId = "opportunity-service",
+            containerFactory = "crmKafkaListenerContainerFactory"
     )
     public void consume(String message) throws Exception {
 
