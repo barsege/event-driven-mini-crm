@@ -46,6 +46,9 @@
 	        
 	
 	        MDC.put("correlationId", event.correlationId());
+	        
+	        if(true)
+	        	throw new IllegalArgumentException("Permanent test failure");
 	
 	        try {
 	            log.info(
