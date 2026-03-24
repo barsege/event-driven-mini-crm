@@ -1,5 +1,7 @@
 package com.begac.minicrm.opportunity.application;
 
+import java.util.UUID;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,7 @@ public class OpportunityService {
 	
 	@Transactional
 	public void handleLeadQualified(EventEnvelope<LeadQualifiedPayload> event) {
+		
 		log.info(
 		        "Handling LeadQualified event. eventId={}, correlationId={}, leadId={}",
 		        event.eventId(),
