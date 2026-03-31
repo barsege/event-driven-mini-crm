@@ -9,5 +9,6 @@ import com.begac.minicrm.shared.events.FailedEvent;
 
 public interface FailedEventRepository extends JpaRepository<FailedEvent, UUID> {
 	List<FailedEvent> findAllByOrderByFailedAtDesc();
+	
 
 }

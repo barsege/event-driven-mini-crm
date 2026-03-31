@@ -2,7 +2,7 @@ package com.begac.minicrm.opportunity.events;
 
 import com.begac.minicrm.shared.events.EventEnvelope;
 import com.begac.minicrm.shared.events.FailedEvent;
-import com.begac.minicrm.shared.events.FailedEventRepository;
+import com.begac.minicrm.shared.events.api.FailedEventRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;

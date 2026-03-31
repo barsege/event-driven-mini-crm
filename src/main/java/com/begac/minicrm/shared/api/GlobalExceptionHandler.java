@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
 
@@ -42,6 +43,18 @@ public class GlobalExceptionHandler {
                 .orElse("Validation failed");
 
         return buildResponse(HttpStatus.BAD_REQUEST, message, request);
+    }
+    
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<ApiErrorResponse> handleResponseStatus(
+            ResponseStatusException ex,
+            HttpServletRequest request
+    ) {
+        return buildResponse(
+                HttpStatus.valueOf(ex.getStatusCode().value()),
+                ex.getReason() != null ? ex.getReason() : ex.getMessage(),
+                request
+        );
     }
 
     @ExceptionHandler(Exception.class)
