@@ -2,14 +2,25 @@ package com.begac.minicrm.shared.events;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Index;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "failed_events")
+@Table(
+		name = "failed_events",
+				indexes = {
+				        @Index(name = "idx_failed_events_event_id", columnList = "event_id"),
+				        @Index(name = "idx_failed_events_status", columnList = "status"),
+				        @Index(name = "idx_failed_events_failed_at", columnList = "failed_at"),
+				        @Index(name = "idx_failed_events_status_failed_at", columnList = "status, failed_at")
+				}
+		)
 public class FailedEvent {
 
     @Id
@@ -30,6 +41,16 @@ public class FailedEvent {
     @Column(name = "failed_at", nullable = false)
     private OffsetDateTime failedAt;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private FailedEventStatus status;
+
+    @Column(name = "reprocessed_at")
+    private OffsetDateTime reprocessedAt;
+
+    @Column(name = "retry_count", nullable = false)
+    private int retryCount;
+
     protected FailedEvent() {
     }
 
@@ -40,6 +61,19 @@ public class FailedEvent {
         this.correlationId = correlationId;
         this.payload = payload;
         this.failedAt = OffsetDateTime.now();
+        this.status = FailedEventStatus.NEW;
+        this.retryCount = 0;
+    }
+
+    public void markReprocessed() {
+        this.status = FailedEventStatus.REPROCESSED;
+        this.reprocessedAt = OffsetDateTime.now();
+        this.retryCount++;
+    }
+
+    public void markReprocessFailed() {
+        this.status = FailedEventStatus.REPROCESS_FAILED;
+        this.retryCount++;
     }
 
     public UUID getId() {
@@ -64,5 +98,17 @@ public class FailedEvent {
 
     public OffsetDateTime getFailedAt() {
         return failedAt;
+    }
+
+    public FailedEventStatus getStatus() {
+        return status;
+    }
+
+    public OffsetDateTime getReprocessedAt() {
+        return reprocessedAt;
+    }
+
+    public int getRetryCount() {
+        return retryCount;
     }
 }

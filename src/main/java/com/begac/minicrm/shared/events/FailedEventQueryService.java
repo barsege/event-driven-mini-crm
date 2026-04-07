@@ -28,7 +28,10 @@ public class FailedEventQueryService {
 						failedEvent.getEventId(), 
 						failedEvent.getEventType(), 
 						failedEvent.getCorrelationId(), 
-						failedEvent.getFailedAt()
+						failedEvent.getFailedAt(),
+						failedEvent.getStatus(),
+						failedEvent.getReprocessedAt(),
+						failedEvent.getRetryCount()
 				))
 				.toList();
 	}
@@ -45,7 +48,10 @@ public class FailedEventQueryService {
 				failedEvent.getEventType(),
 				failedEvent.getCorrelationId(),
 				failedEvent.getPayload(),
-				failedEvent.getFailedAt()
+				failedEvent.getFailedAt(),
+				failedEvent.getStatus(),
+				failedEvent.getReprocessedAt(),
+				failedEvent.getRetryCount()
 				);
 	}
 }

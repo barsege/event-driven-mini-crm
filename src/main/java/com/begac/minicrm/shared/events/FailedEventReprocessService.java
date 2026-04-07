@@ -48,6 +48,8 @@ public class FailedEventReprocessService {
 
         kafkaTemplate.send("crm.lead-events", normalizedPayload);
         
+        failedEvent.markReprocessed();
+        failedEventRepository.save(failedEvent);
         
         log.info("Normalized payload before reprocess={}", normalizedPayload);
 
